@@ -1,0 +1,33 @@
+{
+  "name": "rabbit-chatter",
+  "version": "1.0.0",
+  "description": "A message emitter for RabbitMQ",
+  "main": "lib/rabbit-chatter.js",
+  "scripts": {
+    "test": "mocha test/."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TBear79/rabbit-chatter"
+  },
+  "keywords": [
+    "rabbitmq",
+    "amqp",
+    "amqplib",
+    "event emitter",
+    "messag queue",
+    "service bus"
+  ],
+  "author": "Thorbjørn Jelgren",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.4.2",
+    "node-uuid": "^1.4.7",
+    "util": "^0.10.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "sinon": "^1.17.4",
+    "winston": "^2.2.0"
+  }
+}
