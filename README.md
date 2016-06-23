@@ -74,7 +74,7 @@ Boolean
 
 Default: false
 
-If true, console-messages from winston-fast-rabbitmq will be suppressed. 
+If true, console-messages from rabbit-chatter will be suppressed. 
 
 
 ### protocol
@@ -143,7 +143,7 @@ The topic for the exchange.
 
 String
 
-Default: 'winstonLog'
+Default: 'rabbitChat'
 
 The name of the exchange.
 
