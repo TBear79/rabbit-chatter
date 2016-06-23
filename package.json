@@ -15,7 +15,7 @@
     "amqp",
     "amqplib",
     "event emitter",
-    "messag queue",
+    "message queue",
     "service bus"
   ],
   "author": "Thorbjørn Jelgren",

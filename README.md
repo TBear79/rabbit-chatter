@@ -143,7 +143,7 @@ The topic for the exchange.
 
 String
 
-Default: 'rabbitChat'
+Default: 'rabbit-chat'
 
 The name of the exchange.
 
