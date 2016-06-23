@@ -158,7 +158,7 @@ That being said, rabbit-chatter sets some defaults in order to make things a bit
 
 String
 
-Default: appId set on the instanciation.
+Default: appId set on the instantiation.
 
 The name of the sending application.
 
