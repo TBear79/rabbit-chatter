@@ -111,7 +111,7 @@ describe('RabbitMq connection', () => {
 					i++; 
 					if(i >= numberOfMessagesToSend) 
 						clearInterval(tmpTimer);
-				}, 10);
+				}, 1);
 
 					
 			}, 500);
