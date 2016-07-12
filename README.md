@@ -176,7 +176,7 @@ A guid for the recieving application to respond to.
 
 Number
 
-Default: milliseconds elapsed since 1 January 1970 00:00:00 UTC set with date.now()
+Default: milliseconds elapsed since 1 January 1970 00:00:00 UTC set with Date.now()
 
 
 # Tests
@@ -195,7 +195,13 @@ Then run:
 
 NOTICE: The test is not unit test but tests the functionality for submitting to RabbitMQ. So RabbitMQ is required to be installed locally in order to run the tests.
 
-In one of the tests, 1000 messages are send to, and returned from, the queue . It runs in about 12 seconds so don't be nervous if it seems to stall for a while.
+#Release notes
+
+* 1.0.3 - Added throttling using [dont-collide](https://www.npmjs.com/package/dont-collide))
+* 1.0.2 - Quickfix for connection that is sometimes null when trying to close it
+* 1.0.1 - Added support for sending properties
+* 1.0.0 - First working version
+
 
 #Futher reading
 
