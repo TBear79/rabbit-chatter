@@ -92,8 +92,7 @@ describe('RabbitMq connection', () => {
 			
 		});
 
-
-
+		
 		it('should send 1000 messages and receive them all',  (done) => {
 
 			const numberOfMessagesToSend = 1000;
@@ -103,17 +102,9 @@ describe('RabbitMq connection', () => {
 			let msgCount = 0;
 
 			setTimeout(() => { 
-				let i = 0;
-				let tmpTimer;
-
-				tmpTimer = setInterval(() => { 
-					setTimeout(() => { rabbit.chat("TESTING"); }, 50);
-					i++; 
-					if(i >= numberOfMessagesToSend) 
-						clearInterval(tmpTimer);
-				}, 1);
-
-					
+				for(let i = 0; i < numberOfMessagesToSend; i++){
+					rabbit.chat("TESTING"); 
+				}				
 			}, 500);
 
 			return amqplib
@@ -146,10 +137,9 @@ describe('RabbitMq connection', () => {
 					  	});
 				})
 				.catch((ex) => { throw ex; });
-
-			
-			
 		});
+
+
 	});
 });
 
