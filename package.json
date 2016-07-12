@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "amqplib": "^0.4.2",
+    "dont-collide": "^1.0.0",
     "node-uuid": "^1.4.7",
     "util": "^0.10.3"
   },
