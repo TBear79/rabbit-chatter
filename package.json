@@ -19,7 +19,7 @@
     "service bus"
   ],
   "author": "Thorbjørn Jelgren",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "amqplib": "^0.4.2",
     "dont-collide": "^1.0.0",
