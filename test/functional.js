@@ -12,7 +12,6 @@ const assert = chai.assert;
 const expect = chai.expect;
 const sinon = require('sinon');
 const amqplib = require('amqplib');
-const util = require('util');
 
 const rabbitChatter = require('../lib/rabbit-chatter.js');
 
