@@ -1,6 +1,6 @@
 {
   "name": "rabbit-chatter",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "A message emitter for RabbitMQ",
   "main": "lib/rabbit-chatter.js",
   "scripts": {
