@@ -143,10 +143,17 @@ The topic for the exchange.
 
 String
 
-Default: 'rabbit-chat'
+Default: ''
 
-The name of the exchange.
+The name of the exchange. Leave empty and use routingKey in order to send to a specific queue no matter what exchange it's bound to.
 
+### routingKey
+
+String
+
+Default: ''
+
+The name of the queue to send the message to.
 
 # Sending properties
 
@@ -197,6 +204,7 @@ NOTICE: The test is not unit test but tests the functionality for submitting to 
 
 #Release notes
 
+* 1.1.1 - Added a routing key so it's possible to send messages to a specific queue of a exchange
 * 1.1.0 - Moved the callback that is send to the chat-function so that it now is called with the channel as parameter
 * 1.0.5 - Removed dependency for util
 * 1.0.4 - Updated license type to MIT
