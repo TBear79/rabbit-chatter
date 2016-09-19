@@ -204,7 +204,8 @@ NOTICE: The test is not unit test but tests the functionality for submitting to 
 
 #Release notes
 
-* 1.1.1 - Added a routing key so it's possible to send messages to a specific queue of a exchange
+* 1.1.3 - Fixed problem when using virtual host. You no longer have to send a forward slash along with the virtual host.
+* 1.1.2 - Added a routing key so it's possible to send messages to a specific queue of a exchange
 * 1.1.0 - Moved the callback that is send to the chat-function so that it now is called with the channel as parameter
 * 1.0.5 - Removed dependency for util
 * 1.0.4 - Updated license type to MIT
