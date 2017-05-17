@@ -212,6 +212,7 @@ NOTICE: The test is not unit test but tests the functionality for submitting to 
 
 #Release notes
 
+* 1.2.1 - Update documentation
 * 1.2.0 - Added `timeout` as an option. Correcting default error handling function
 * 1.1.6 - Corrected arrow function issue
 * 1.1.5 - Replaced package node-uuid with uuid. Thanks to marcbachmann
