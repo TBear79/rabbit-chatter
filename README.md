@@ -63,7 +63,7 @@ A function for handling errors if it fails when sending the log to the queue.
 The default function looks like this:
 ```javascript
 	function(ex) {
-		console.log('ERROR in rabbit-chatter: ' + util.inspect(ex, { depth: null }));
+		console.error('ERROR in rabbit-chatter:', ex.stack);
 	}
 ```
 
