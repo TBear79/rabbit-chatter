@@ -155,6 +155,14 @@ Default: ''
 
 The name of the queue to send the message to.
 
+### timeout
+
+Number
+
+Default: 1000
+
+The amount of time in milliseconds before the connection closes.
+
 # Sending properties
 
 It is possible to send properties along with the message. They are build into amqplib so you can get more knowledge here: [amqplib publish properties](http://www.squaremobius.net/amqp.node/channel_api.html#channel-publish)
@@ -204,7 +212,7 @@ NOTICE: The test is not unit test but tests the functionality for submitting to 
 
 #Release notes
 
-* 1.2.0 - Correcting default error handling function
+* 1.2.0 - Added `timeout` as an option. Correcting default error handling function
 * 1.1.6 - Corrected arrow function issue
 * 1.1.5 - Replaced package node-uuid with uuid. Thanks to marcbachmann
 * 1.1.4 - Fixed a bug with a misplace slash when using virual host
