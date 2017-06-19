@@ -7,138 +7,171 @@
 
 'use strict'
 
-const chai = require('chai');
-const assert = chai.assert;
-const expect = chai.expect;
+const expect = require('chai').expect;
 const sinon = require('sinon');
 const amqplib = require('amqplib');
 
 const rabbitChatter = require('../lib/rabbit-chatter.js');
 
 describe('RabbitMq connection', () => {
-	describe('Test if messages are emittet to the exchange', function() {
-		this.timeout(30000);
 
-		const testAppId1 = 'TESTAPPIDALL';
+	describe('Test if messages are emitted to the exchange', function () {
+		this.timeout(10000);
 
-		const options = { 
-			appId: testAppId1,
+		const queueName = '';
+		const isQueueExclusive = true;
+
+		const options = {
+			appId: 'TESTAPPIDALL',
 			protocol: 'amqp',
 			username: 'guest',
 			password: 'guest',
 			host: 'localhost',
 			port: 5672,
+			virtualHost: "%2f",
 			silent: true,
-			host: 'localhost',
 			exchangeName: 'TEST',
 			exchangeType: 'topic',
-			durable: false
+			routingKey: '',
+			durable: false,
+			timeout: 1000
 		}
 
-		
-		const rabbit = rabbitChatter.rabbit(options);
+		const connect = (timeout) => {
+			return amqplib
+				.connect(`${options.protocol}://${options.username}:${options.password}@${options.host}:${options.port}/${options.virtualHost}`)
+				.then((conn) => {
+					setTimeout(() => {
+						connection.close();
+					}, timeout);
+					connection = conn;
+					return conn.createChannel();
+				})
+				.then((channel) => {
+					channel.assertExchange(options.exchangeName, options.exchangeType, { durable: options.durable })
+						.then(() => {
+							channel.assertQueue(queueName, { exclusive: isQueueExclusive })
+								.then((q) => {
+									channel.bindQueue(q.queue, options.exchangeName, '');
+								});
+						})
+						.catch((ex) => { throw ex; });
+					return channel;
+				});
+		}
 
-		before(function () { 
-		});
-		after(function () { 
+		const subscribe = (channel, handler) => {
+			return channel.consume(queueName, (msg) => { handler(msg); }, { noAck: true });
+		};
+
+		let rabbit;
+		let connection;
+		let msgCount;
+
+		beforeEach(function () {
+			msgCount = 0;
+			rabbit = rabbitChatter.rabbit(options);
 		});
 
-		it('should return the correct message from queue',  (done) => {
-			let connection; 
-			let connectionCloseTimerId;
+		afterEach(function () {
+			rabbit = null;
+			connection = null;
+		});
+
+		it('should return the correct message from queue', (done) => {
+			let message;
 			const testContent = 'TESTING 123';
 			const testCorrelationId = 'CORRELATIONIDTEST';
-			
-			let msgCount = 0;
 
-			setTimeout(() => { rabbit.chat(testContent, { correlationId: testCorrelationId }); }, 50);
+			setTimeout(() => {
+				rabbit.chat(testContent, { correlationId: testCorrelationId });
+			}, options.timeout / 2);
 
-			return amqplib
-				 .connect(options.protocol + '://' + options.host)
-				.then((conn) => { connection = conn; return conn.createChannel(); })
+			connect(1000)
 				.then((channel) => {
-					return channel.assertExchange(options.exchangeName, options.exchangeType, {durable: options.durable})
-						.then((ok) => {
-							return channel.assertQueue('', {exclusive: true})
-					    				.then((q) => {
-					    					channel.bindQueue(q.queue, options.exchangeName, '');
+					subscribe(channel, (msg) => {
+						msgCount++;
+						message = msg;
+					});
 
-					    					return channel.consume(q.queue, (msg) => {
-					    						
-					    						msgCount++;
+					connection.on('close', () => {
+						expect(message.content.toString()).to.equal(testContent);
+						expect(message.properties.appId).to.equal(options.appId);
+						expect(message.properties.correlationId).to.equal(testCorrelationId);
+						expect(msgCount).to.equal(1);
+						done();
+					});
+				});
 
-					    						clearTimeout(connectionCloseTimerId);
-
-										        connectionCloseTimerId = setTimeout(() => { 
-										        	expect(msg.content.toString()).to.equal(testContent);
-													expect(msg.properties.appId).to.equal(testAppId1);
-													expect(msg.properties.correlationId).to.equal(testCorrelationId);
-										        	expect(msgCount).to.equal(1);
-										        	
-										        	connection.close(); 
-
-										        	done();
-										        }, 500);
-
-										    }, {noAck: true});
-					    				})
-
-					  	});
-				})
-				.catch((ex) => { throw ex; });
-
-			
-			
 		});
 
-		
-		it('should send 1000 messages and receive them all',  (done) => {
+		it('should send 20 messages and receive them all', (done) => {
+			const numberOfMessages = 20;
 
-			const numberOfMessagesToSend = 1000;
+			setTimeout(() => {
+				for (let i = 0; i < numberOfMessages; i++) {
+					rabbit.chat("TESTING");
+				}
+			}, options.timeout / 20);
 
-			let connection; 
-			let connectionCloseTimerId;
-			let msgCount = 0;
-
-			setTimeout(() => { 
-				for(let i = 0; i < numberOfMessagesToSend; i++){
-					rabbit.chat("TESTING"); 
-				}				
-			}, 500);
-
-			return amqplib
-				 .connect(options.protocol + '://' + options.host)
-				.then((conn) => { connection = conn; return conn.createChannel(); })
+			connect(1000)
 				.then((channel) => {
-					return channel.assertExchange(options.exchangeName, options.exchangeType, {durable: options.durable})
-						.then((ok) => {
-							return channel.assertQueue('', {exclusive: true})
-					    				.then((q) => {
-					    					channel.bindQueue(q.queue, options.exchangeName, '');
+					subscribe(channel, (msg) => {
+						msgCount++;
+					});
 
-					    					return channel.consume(q.queue, (msg) => {
-					    						
-					    						msgCount++;
+					connection.on('close', () => {
+						expect(msgCount).to.equal(numberOfMessages);
+						done();
+					});
+				});
 
-					    						clearTimeout(connectionCloseTimerId);
-
-										        connectionCloseTimerId = setTimeout(() => { 
-										        	expect(msgCount).to.equal(numberOfMessagesToSend);
-										        	
-										        	connection.close(); 
-
-										        	done();
-										        }, 500);
-
-										    }, {noAck: true});
-					    				})
-
-					  	});
-				})
-				.catch((ex) => { throw ex; });
 		});
 
+		it('should send sporadic messages and receive them all', (done) => {
+			let timer;
+			let counter = 0;
+			const maxTimeout = 1300;
+			const numberOfMessages = 5;
+
+			const repeater = () => {
+				const getNextInterval = () => {
+					const rand = Math.random();
+					const interval = (rand === 0 ? 0.1 : rand) * maxTimeout;
+					return interval;
+				};
+
+				if (timer) {
+					clearInterval(timer);
+
+					if (numberOfMessages === counter) {
+						return;
+					}
+				}
+
+				timer = setInterval(() => {
+					rabbit.chat("TESTING");
+					counter++;
+					repeater();
+				}, getNextInterval());
+			};
+
+			repeater();
+
+			connect(maxTimeout * numberOfMessages)
+				.then((channel) => {
+					subscribe(channel, (msg) => {
+						msgCount++;
+					});
+
+					connection.on('close', () => {
+						expect(msgCount).to.equal(numberOfMessages);
+						done();
+					});
+				});
+
+		});
 
 	});
-});
 
+});
